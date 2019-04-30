@@ -16,17 +16,26 @@ class sophos_av::install inherits sophos_av {
   }
 
   # Variable prep
-  if $sophos_av::auto_start { $str_autostart = 'True' }
-  else                            { $str_autostart = 'False' }
-
-  if $sophos_av::enable_on_boot { $str_enableonboot = 'True' }
-  else                                { $str_enableonboot = 'False' }
-
-  if $sophos_av::live_protection { $str_liveprotection = 'True' }
-  else                                 { $str_liveprotection = 'False' }
-
-  if $sophos_av::prefer_fanotify { $str_preferfanotify = 'True' }
-  else                                 { $str_preferfanotify = 'False' }
+  $str_autostart = $sophos_av::auto_start ? {
+    true    => 'True',
+    false   => 'False',
+    default => 'False',
+  }
+  $str_enableonboot = $sophos_av::enable_on_boot ? {
+    true    => 'True',
+    false   => 'False',
+    default => 'True',
+  }
+  $str_liveprotection = $sophos_av::live_protection ? {
+    true    => 'True',
+    false   => 'False',
+    default => 'True',
+  }
+  $str_preferfanotify = $sophos_av::prefer_fanotify ? {
+    true    => 'True',
+    false   => 'False',
+    default => 'False',
+  }
 
   case $sophos_av::update_source_type {
     'sophos','s': {
@@ -44,7 +53,11 @@ class sophos_av::install inherits sophos_av {
   }
 
   # lint:ignore:140chars
-  $exec_command = "bash ./install.sh ${sophos_av::install_dir} --automatic --acceptlicense --autostart=${str_autostart} --enableOnBoot=${str_enableonboot} --live-protect=${str_liveprotection} --update_source_type=${str_updatesourcetype} --preferFanotify=${str_preferfanotify}"
+  $exec_command = $update_free ? {
+    true    => "bash ./install.sh ${sophos_av::install_dir} --automatic --acceptlicense --autostart=${str_autostart} --enableOnBoot=${str_enableonboot} --live-protection=${str_liveprotection} --update-free=True --preferFanotify=${str_preferfanotify}",
+    default => "bash ./install.sh ${sophos_av::install_dir} --automatic --acceptlicense --autostart=${str_autostart} --enableOnBoot=${str_enableonboot} --live-protection=${str_liveprotection} --update-source-type=${str_updatesourcetype} --preferFanotify=${str_preferfanotify}",
+  }
+  notify { $exec_command: }
   exec { 'install SAV for Linux Free Edition':
     path    => ['/usr/sbin','/sbin','/usr/bin','/bin'],
     command => $exec_command,

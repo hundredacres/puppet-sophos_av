@@ -5,6 +5,7 @@ class sophos_av (
   $auto_start            = $sophos_av::params::auto_start,
   $enable_on_boot        = $sophos_av::params::enable_on_boot,
   $live_protection       = $sophos_av::params::live_protection,
+  $update_free           = $sophos_av::params::update_free,
   $update_source_type    = $sophos_av::params::update_source_type,
   $prefer_fanotify       = $sophos_av::params::prefer_fanotify,
   $email_target          = $sophos_av::params::email_target,

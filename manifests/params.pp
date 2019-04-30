@@ -4,6 +4,7 @@ class sophos_av::params {
   $auto_start         = false
   $enable_on_boot     = true
   $live_protection    = true
+  $update_free        = undef
   $update_source_type = 'sophos'
 
   case $::osfamily {

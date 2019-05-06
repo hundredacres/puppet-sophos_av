@@ -57,7 +57,6 @@ class sophos_av::install inherits sophos_av {
     true    => "bash ./install.sh ${sophos_av::install_dir} --automatic --acceptlicense --autostart=${str_autostart} --enableOnBoot=${str_enableonboot} --live-protection=${str_liveprotection} --update-free=True --preferFanotify=${str_preferfanotify}",
     default => "bash ./install.sh ${sophos_av::install_dir} --automatic --acceptlicense --autostart=${str_autostart} --enableOnBoot=${str_enableonboot} --live-protection=${str_liveprotection} --update-source-type=${str_updatesourcetype} --preferFanotify=${str_preferfanotify}",
   }
-  notify { $exec_command: }
   exec { 'install SAV for Linux Free Edition':
     path    => ['/usr/sbin','/sbin','/usr/bin','/bin'],
     command => $exec_command,
